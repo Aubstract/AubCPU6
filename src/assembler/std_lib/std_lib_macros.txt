@@ -1,0 +1,112 @@
+// Standard Library of Macros
+// Created 2025-04-14
+
+// -----------------------------------------------
+// Pseudo-instructions
+// -----------------------------------------------
+
+MACRO cmp a, b
+    sub x0, a, b
+ENDM
+
+MACRO mov a, b
+    add b, x0, a
+ENDM
+
+MACRO inc a
+    adi a, 1
+ENDM
+
+MACRO dec a
+    adi a, 255
+ENDM
+
+MACRO lsh a
+    add a, a, a
+ENDM
+
+MACRO nop
+    add x0, x0, x0
+ENDM
+
+MACRO not a
+    ldi macro, 255
+    xor a, a, macro
+ENDM
+
+MACRO jmp a
+    ldi pc, a
+ENDM
+
+// -----------------------------------------------
+// Standard Macros
+// -----------------------------------------------
+
+MACRO vtst a
+    or x0, a, x0
+ENDM
+
+MACRO ftst a
+    ldi macro, a
+    and macro, macro, flags
+ENDM
+
+MACRO psh a
+    dec stack
+    sto a, stack
+ENDM
+
+MACRO pop a
+    lod a, stack
+    inc stack
+ENDM
+
+MACRO pek a
+    lod a, stack
+ENDM
+
+MACRO cal a
+    ldi macro, macro_cal_return_from_a
+    psh macro
+    ldi pc, a
+    macro_cal_return_from_a:
+    inc stack
+ENDM
+
+MACRO ret
+    pop pc
+ENDM
+
+MACRO cond_jmp a, b
+    ftst a
+    jin b
+ENDM
+
+MACRO cond_ret a
+    ftst a
+    jin macro_cond_ret_return
+    jmp macro_cond_ret_end
+    macro_cond_ret_return:
+    ret
+    macro_cond_ret_end:
+ENDM
+
+MACRO cond_cal a, b
+    ftst a
+    jin macro_cond_cal_call_b
+    jmp macro_cond_cal_end
+    macro_cond_cal_call_b:
+    cal b
+    macro_cond_cal_end:
+ENDM
+
+MACRO psh_imm a
+    ldi macro, a
+    psh macro
+ENDM
+
+// a is ptr, b is imm
+MACRO sto_imm a, b
+    ldi macro, b
+    sto macro, a
+ENDM
