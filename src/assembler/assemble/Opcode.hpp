@@ -1,9 +1,10 @@
 // Created on 2025-04-14
 
-#ifndef AUBCPU6_OPCODES_HPP
-#define AUBCPU6_OPCODES_HPP
+#ifndef AUBCPU6_OPCODE_HPP
+#define AUBCPU6_OPCODE_HPP
 
 #include <string>
+#include <vector>
 
 struct Opcode
 {
@@ -31,4 +32,4 @@ Opcode opcode_table[] = {
 };
 
 
-#endif //AUBCPU6_OPCODES_HPP
+#endif //AUBCPU6_OPCODE_HPP

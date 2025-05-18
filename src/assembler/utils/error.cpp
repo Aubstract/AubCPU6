@@ -1,6 +1,6 @@
 // Created on 2025-04-17
 
-#include "error.h"
+#include "error.hpp"
 
 void error(std::string message)
 {

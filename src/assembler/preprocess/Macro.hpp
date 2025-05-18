@@ -5,10 +5,10 @@
 #ifndef MACRO_H
 #define MACRO_H
 
+#include "Line.hpp"
+
 #include <string>
 #include <vector>
-
-#include "Line.h"
 
 struct MacroArg {
     std::string name;

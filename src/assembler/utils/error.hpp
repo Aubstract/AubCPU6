@@ -5,10 +5,10 @@
 #ifndef ERROR_H
 #define ERROR_H
 
+#include "../preprocess/Line.hpp"
+
 #include <iostream>
 #include <string>
-
-#include "Line.h"
 
 void error(std::string);
 void error(Line, std::string);
