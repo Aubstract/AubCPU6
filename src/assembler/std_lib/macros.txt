@@ -1,0 +1,124 @@
+// Created 2025-04-14
+// Standard Library of Macros
+
+// -----------------------------------------------
+// Pseudo-instructions
+// -----------------------------------------------
+
+// Put square brackets around the generic arguments that should be replaced
+// Put an asterisk anywhere a name should be mangled with a number
+
+MACRO cmp a, b
+    sub x0, [a], [b]
+ENDM
+
+MACRO mov a, b
+    add [b], x0, [a]
+ENDM
+
+MACRO inc a
+    adi [a], 1
+ENDM
+
+MACRO dec a
+    adi [a], 255
+ENDM
+
+MACRO lsh a
+    add [a], [a], [a]
+ENDM
+
+MACRO nop
+    add x0, x0, x0
+ENDM
+
+MACRO not a
+    ldi macro, 255
+    xor [a], [a], macro
+ENDM
+
+MACRO jmp a
+    ldi pc, [a]
+ENDM
+
+// -----------------------------------------------
+// Standard Macros
+// -----------------------------------------------
+
+MACRO vtst a
+    or x0, [a], x0
+ENDM
+
+MACRO ftst a
+    ldi macro, [a]
+    and macro, macro, flags
+ENDM
+
+MACRO psh a
+    dec stack
+    sto [a], stack
+ENDM
+
+MACRO pop a
+    lod [a], stack
+    inc stack
+ENDM
+
+MACRO pek a
+    lod [a], stack
+ENDM
+
+MACRO psh_imm a
+    ldi macro, [a]
+    psh macro
+ENDM
+
+MACRO sto_imm a, b
+    ldi macro, [b]                                  // a is ptr, b is imm
+    sto macro, [a]
+ENDM
+
+MACRO cal a
+    psh_imm macro_cal_return_from_[a]*
+    jmp [a]
+    .macro_cal_return_from_[a]*
+    inc stack
+ENDM
+
+MACRO ret
+    lod pc, stack
+ENDM
+
+MACRO cond_jmp a, b
+    ftst [a]
+    jin [b]
+ENDM
+
+MACRO cond_ret a
+    ftst [a]
+    jin macro_cond_ret_return*
+    jmp macro_cond_ret_end*
+    .macro_cond_ret_return*
+    ret
+    .macro_cond_ret_end*
+ENDM
+
+MACRO cond_cal a, b
+    ftst [a]
+    jin macro_cond_cal_call_[b]*
+    jmp macro_cond_cal_end*
+    .macro_cond_cal_call_[b]*
+    cal [b]
+    .macro_cond_cal_end*
+ENDM
+
+// -----------------------------------------------
+// Initialization Macros
+// -----------------------------------------------
+
+// This macro is the entry point for the program, it calls main and
+// halts the program once main returns.
+MACRO start
+    cal main
+    hlt
+ENDM
