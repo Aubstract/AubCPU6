@@ -22,7 +22,7 @@ int main()
     read_file_into_src_lines(src_file_path, src_file_lines);
 
     // Preprocess the source file
-    auto* root = new ASTNode(PROGRAM, "program");
+    auto* root = new ASTNode(Token("program", PROGRAM, "null", -1, -1));
     std::vector<ASTNode*> macros;
     std::vector<ASTNode*> constants;
     std::vector<ASTNode*> labels;

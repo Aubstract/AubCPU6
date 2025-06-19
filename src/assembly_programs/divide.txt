@@ -1,0 +1,34 @@
+// Created 2025-06-19
+// Division Algorithm
+
+.divide
+    // Notes:
+    // In the case of a divide-by-zero,
+    // this subroutine returns 0
+    //
+    // Arguments:
+    // arg_a = numerator
+    // arg_b = denominator
+    //
+    // Stack:
+    // ret_addr <- stack_ptr
+    //
+    // Return Value:
+    // arg_a / arg_b
+
+    // Load default return value
+    ldi return, 0
+
+    // If arg_b == 0, early return
+    vtest arg_b
+    cond_jmp zero_flag, divide_return
+
+    .divide_loop
+        cmp arg_a, arg_b
+        cond_jmp sign_flag, divide_return
+        inc return
+        sub arg_a, arg_a, arg_b
+        jmp divide_loop
+
+    .divide_return
+        ret

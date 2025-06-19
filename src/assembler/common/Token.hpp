@@ -7,9 +7,29 @@
 
 #include <string>
 
+enum TokenType
+{
+    TEMP = 0,
+    PROGRAM,
+    INCLUDE_STATEMENT,
+    INCLUDE_PATH,
+    INSTRUCTION,
+    OPCODE,
+    REGISTER,
+    IMMEDIATE,
+    JUMP_LABEL_DEF,
+    CONSTANT_LABEL_DEF,
+    LABEL_USE,
+    MACRO_DEF,
+    MACRO_ARG,
+    MACRO_BODY,
+    MACRO_CALL
+};
+
 struct Token
 {
     std::string token;
+    TokenType type;
     std::string src_file;
     int line_num;
     int token_index;

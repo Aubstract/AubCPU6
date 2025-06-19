@@ -44,7 +44,7 @@ void sanitize(std::vector<SourceLine>& src_lines)
 }
 
 
-
+/*
 void construct_AST(std::vector<SourceLine>& src_lines,
                    ASTNode* root,
                    std::vector<ASTNode*>& macros,
@@ -107,6 +107,7 @@ void construct_AST(std::vector<SourceLine>& src_lines,
         }
     }
 }
+ */
 
 void preprocess(std::vector<SourceLine>& src_lines,
                 ASTNode* root,
@@ -122,11 +123,14 @@ void preprocess(std::vector<SourceLine>& src_lines,
     for (const auto& line : src_lines)
     {
         std::vector<std::string> str_tokens = split(line.line, " ");
+        tokens.emplace_back();
         for (size_t i = 0; i < str_tokens.size(); i++)
         {
-            tokens.back().emplace_back(Token(str_tokens[i], line.src_file, line.line_num, i));
+            tokens.back().emplace_back(Token(str_tokens[i], TEMP, line.src_file, line.line_num, i));
         }
     }
+
+    // Resolve include statements
 
     // Extract macro definitions
 
@@ -135,7 +139,7 @@ void preprocess(std::vector<SourceLine>& src_lines,
     // Extract jump label definitions
 
     // Construct the AST from the sanitized source lines
-    construct_AST(src_lines, root, macros, constants, labels);
+    //construct_AST(src_lines, root, macros, constants, labels);
 }
 
 #endif //AUBCPU6_PREPROCESS_HPP

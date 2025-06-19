@@ -1,0 +1,26 @@
+// Created 2025-04-14
+// Fibonacci Program for AubCPU6
+
+first_fib_term: 0
+second_fib_term: 1
+
+.main
+    ldi x4, first_fib_term
+    ldi x5, second_fib_term
+
+    // Print first term
+    // Print second term
+
+    .fib_loop_start
+    add x6, x5, x4
+    mov x5, x4
+    mov x4, x6
+
+    cond_jmp carry_flag, fib_loop_end
+
+    // Print new term
+
+    jmp fib_loop_start
+
+    .fib_loop_end
+    ret

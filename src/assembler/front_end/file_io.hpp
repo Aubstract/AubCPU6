@@ -27,7 +27,7 @@ void read_file_into_src_lines(std::filesystem::path& path, std::vector<SourceLin
 
     while (std::getline(file, line))
     {
-        lines.emplace_back(file_name, line_num, line);
+        lines.emplace_back(file_name, line, line_num);
         line_num++;
     }
 
