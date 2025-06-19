@@ -2,11 +2,17 @@
 // Created by Aubrey on 5/18/2025.
 //
 
-#ifndef AUBCPU6_ASSEMBLE_DEFS_HPP
-#define AUBCPU6_ASSEMBLE_DEFS_HPP
+#ifndef AUBCPU6_DEFINITIONS_HPP
+#define AUBCPU6_DEFINITIONS_HPP
+
+#include "ASTNode.hpp"
 
 #include <string>
 #include <vector>
+#include <filesystem>
+
+const std::filesystem::path STD_LIB_PATH("../src/assembler/std_lib/std_lib.txt");
+const std::string START_MACRO_NAME = "start";
 
 std::vector<std::string> opcode_mnemonics = {
         "hlt",
@@ -52,5 +58,4 @@ std::vector<std::string> register_names = {
         "pc"
 };
 
-
-#endif //AUBCPU6_ASSEMBLE_DEFS_HPP
+#endif //AUBCPU6_DEFINITIONS_HPP

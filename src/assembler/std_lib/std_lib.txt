@@ -1,6 +1,0 @@
-// Created 2025-04-25
-// Standard Library
-
-// These will be included in every program
-#include "constants.txt"
-#include "macros.txt"
