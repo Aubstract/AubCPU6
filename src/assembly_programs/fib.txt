@@ -1,9 +1,12 @@
 // Created 2025-04-14
 // Fibonacci Program for AubCPU6
 
+first_fib_term: 0
+second_fib_term: 1
+
 .main
-    ldi x4, 0
-    ldi x5, 1
+    ldi x4, first_fib_term
+    ldi x5, second_fib_term
 
     // Print first term
     // Print second term

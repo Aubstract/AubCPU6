@@ -1,6 +1,14 @@
-// Created on 2025-04-17
+//
+// Created by Aubrey on 5/18/2025.
+//
 
-#include "error.hpp"
+#ifndef AUBCPU6_ERROR_HPP
+#define AUBCPU6_ERROR_HPP
+
+#include "../common/SourceLine.hpp"
+
+#include <iostream>
+#include <string>
 
 void quit_with_error(std::string message)
 {
@@ -11,7 +19,7 @@ void quit_with_error(std::string message)
     std::exit(EXIT_FAILURE);
 }
 
-void quit_with_error(Line line, std::string message)
+void quit_with_error(SourceLine line, std::string message)
 {
     std::cout << "################################################" << std::endl;
     std::cout << "ERROR!" << std::endl;
@@ -20,3 +28,5 @@ void quit_with_error(Line line, std::string message)
     std::cout << "################################################" << std::endl;
     std::exit(EXIT_FAILURE);
 }
+
+#endif //AUBCPU6_ERROR_HPP

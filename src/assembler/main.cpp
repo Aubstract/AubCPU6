@@ -1,5 +1,6 @@
 // Created 2025-04-14
 
+#include "utils/AST.hpp"
 #include "assemble/assemble.hpp"
 #include "utils/file_io.hpp"
 #include "preprocess/preprocess.hpp"
@@ -17,14 +18,15 @@ int main()
     std::cin >> src_file_path_str;
     std::filesystem::path src_file_path(src_file_path_str);
 
-    std::vector<Line> lines;
-    read_file_into_lines(src_file_path, lines);
+    std::vector<StrLine> str_lines;
+    read_file_into_str_lines(src_file_path, str_lines);
 
     // Preprocess the source file
-    preprocess(lines, src_file_path);
+    ASTNode root(Token{TOKEN_TYPE_SRC_FILE, ""});
+    preprocess(root, str_lines, src_file_path);
 
     // Assemble the source file
-    assemble(lines);
+    //assemble(lines);
 
     return 0;
 }

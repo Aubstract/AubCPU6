@@ -5,14 +5,14 @@
 #ifndef AUBCPU6_FILE_IO_HPP
 #define AUBCPU6_FILE_IO_HPP
 
-#include "../preprocess/Line.hpp"
-#include "../utils/error.hpp"
+#include "../error/error.hpp"
+#include "../common/SourceLine.hpp"
 
 #include <filesystem>
 #include <fstream>
 #include <vector>
 
-void read_file_into_str_lines(std::filesystem::path& path, std::vector<StrLine>& lines)
+void read_file_into_src_lines(std::filesystem::path& path, std::vector<SourceLine>& lines)
 {
     std::ifstream file(path);
 

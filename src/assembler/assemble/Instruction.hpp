@@ -5,7 +5,7 @@
 #ifndef AUBCPU6_INSTRUCTION_HPP
 #define AUBCPU6_INSTRUCTION_HPP
 
-#include "Token.hpp"
+#include "../utils/Token.hpp"
 #include <vector>
 
 struct Instruction

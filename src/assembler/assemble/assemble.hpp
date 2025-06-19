@@ -17,46 +17,56 @@
 #include <cassert>
 #include <vector>
 
-void resolve_constants(std::vector<Line>& lines, std::vector<Constant>& constants)
+void resolve_constants(std::vector<Instruction>& instructions, std::vector<Constant>& constants)
 {
     // Constants will be written like this:
     // "constant_name: value"
 
     // Construct constants
-    for (int i = 0; i < lines.size(); ++i)
+    bool constant_found = false;
+    for (int i = 0; i < instructions.size(); constant_found ? i : i++)
     {
-        std::string line = lines.at(i).line;
-
-        if (line.find(':') != std::string::npos)
+        constant_found = false;
+        if (instructions.at(i).tokens[0].type == TOKEN_TYPE_CONSTANT_LABEL)
         {
-            // Get the constant name and value
-            size_t colon_pos = line.find(':');
-            std::string constant_name = line.substr(0, colon_pos);
-            int constant_value = std::stoi(line.substr(colon_pos + 1));
+            constant_found = true;
+            std::string constant_name = instructions.at(i).tokens[0].value;
+            std::string constant_value = instructions.at(i).tokens[1].value;
+
+            // Check if the constant is already defined
+            for (const auto& constant : constants)
+            {
+                if (constant.name == constant_name)
+                {
+                    quit_with_error("Multiple definitions of constant: " + constant_name);
+                }
+            }
 
             // Add the constant to the list of constants
-            constants.emplace_back(constant_name, constant_value);
-
-            // Remove the constant definition from the lines
-            lines.erase(lines.begin() + i);
+            constants.emplace_back(constant_name, std::stoi(constant_value));
+            instructions.erase(instructions.begin() + i);
         }
     }
 
     // Replace the constants with their values
-    for (int i = 0; i < lines.size(); ++i)
+    for (auto& instr : instructions)
     {
-        std::string line = lines.at(i).line;
-
-        for (const auto& constant : constants)
+        for (auto& token : instr.tokens)
         {
-            if (line.find(constant.name + " ") != std::string::npos)
+            if (token.type != TOKEN_TYPE_LABEL_USE)
             {
-                // Replace the constant with its value
-                line.replace(line.find(constant.name), constant.name.length(), std::to_string(constant.value));
+                continue;
+            }
+
+            for (const auto& constant : constants)
+            {
+                if (token.value == constant.name)
+                {
+                    // Replace the constant label with its immediate value
+                    token = Token(TOKEN_TYPE_IMMEDIATE, std::to_string(constant.value));
+                }
             }
         }
-
-        lines.at(i).line = line;
     }
 }
 
@@ -96,43 +106,26 @@ void resolve_labels(std::vector<Line>& lines, std::vector<Label>& labels)
 }
 
 
-void tokenize(const std::vector<Line>& lines, std::vector<Instruction>& instr)
+void check_constants_syntax(const std::vector<Instruction>& instructions, const std::vector<Line>& lines)
 {
-    for (auto& line : lines)
+    for (int i = 0; i < instructions.size(); ++i)
     {
-        std::vector<std::string> str_toks = split(line.line, " ");
-        instr.emplace_back();
+        const auto& instr = instructions[i];
+        const auto& line = lines[i];
 
-        for (auto& str_tok : str_toks)
+        if (instr.tokens[0].type == TOKEN_TYPE_CONSTANT_LABEL)
         {
-            TokenType type = TOKEN_TYPE_INVALID;
-
-            if (str_tok.starts_with('.'))
+            // Check for the correct number of tokens
+            if (instr.tokens.size() != 2)
             {
-                type = TOKEN_TYPE_LABEL;
-            }
-            else if (str_tok.ends_with(':'))
-            {
-                type = TOKEN_TYPE_CONSTANT;
-            }
-            else if (std::find(opcode_mnemonics.begin(), opcode_mnemonics.end(), str_tok) != opcode_mnemonics.end())
-            {
-                type = TOKEN_TYPE_OPCODE;
-            }
-            else if (std::find(register_names.begin(), register_names.end(), str_tok) != register_names.end())
-            {
-                type = TOKEN_TYPE_REGISTER;
-            }
-            else if (std::all_of(str_tok.begin(), str_tok.end(), ::isdigit))
-            {
-                type = TOKEN_TYPE_IMMEDIATE;
+                quit_with_error(line, "Incorrect number of tokens for constant definition");
             }
 
-            // Create a new token
-            Token token(type, str_tok);
-
-            // Add the token to the instruction
-            instr.back().tokens.push_back(token);
+            // Check for correct type of tokens
+            if (instr.tokens[1].type != TOKEN_TYPE_IMMEDIATE)
+            {
+                quit_with_error(line, "Second token must be an immediate value");
+            }
         }
     }
 }
@@ -153,20 +146,20 @@ void check_syntax(const std::vector<Instruction>& instructions, const std::vecto
         {
             if (token.type == TOKEN_TYPE_INVALID)
             {
-                error(line, "Invalid token: " + token.value);
+                quit_with_error(line, "Invalid token: " + token.value);
             }
         }
 
         // Check for valid opcode
         if (instr.tokens[0].type != TOKEN_TYPE_OPCODE)
         {
-            error(line, "First token must be an opcode");
+            quit_with_error(line, "First token must be an opcode");
         }
 
         // Check for valid register
         if (instr.tokens.size() > 1 && instr.tokens[1].type != TOKEN_TYPE_REGISTER)
         {
-            error(line, "Second token must be a register");
+            quit_with_error(line, "Second token must be a register");
         }
     }
 }
@@ -175,14 +168,25 @@ void check_syntax(const std::vector<Instruction>& instructions, const std::vecto
 void assemble(std::vector<Line> lines)
 {
     // Tokenize the lines
-    std::vector<Instruction> instructions;
-    tokenize(lines, instructions);
+    //std::vector<Instruction> instructions;
+    //tokenize(lines, instructions);
 
     std::vector<Constant> constants;
     std::vector<Label> labels;
 
     // resolve constants
-    //resolve_constants(lines, constants);
+    check_constants_syntax(instructions, lines);
+    resolve_constants(instructions, constants);
+
+    // print program:
+    for (const auto& instr : instructions)
+    {
+        for (const auto& token : instr.tokens)
+        {
+            std::cout << token.value << " ";
+        }
+        std::cout << std::endl;
+    }
 
     // resolve labels
     //resolve_labels(lines, labels);

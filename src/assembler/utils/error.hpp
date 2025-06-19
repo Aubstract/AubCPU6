@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 
-void error(std::string);
-void error(Line, std::string);
+void quit_with_error(std::string);
+void quit_with_error(Line, std::string);
 
 #endif //ERROR_H
